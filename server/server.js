@@ -64,15 +64,15 @@ io.on("connection", (socket) => {
 //middleware setup
 
 app.use(express.json({limit: "4mb"}));
-app.use(cors({
-  origin: "https://chat-app-frontend1-n03p8nctl-santhoshkumar-ss-projects.vercel.app", // your actual frontend
-  credentials: true
-}));
+//Allow all origin
+const allowedOrigins = ['http://localhost:5173','https://chat-app-frontend1-ashy.vercel.app']
 
 //Routes setup
 app.use("/api/status", (req,res)=>res.send("server is live"));
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
+
+app.use(cors({origin:allowedOrigins, credentials:true}));
 //connect db
 
 await connectDB();
