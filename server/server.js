@@ -65,10 +65,10 @@ io.on("connection", (socket) => {
 
 app.use(express.json({limit: "4mb"}));
 app.use(cors({
-   origin: "https://chat-app-backend-one-wheat.vercel.app", // or "*" just for testing
+  origin: "https://chat-app-frontend1-n03p8nctl-santhoshkumar-ss-projects.vercel.app", // your actual frontend
   credentials: true
-}
-));
+}));
+
 //Routes setup
 app.use("/api/status", (req,res)=>res.send("server is live"));
 app.use("/api/auth", userRouter);
