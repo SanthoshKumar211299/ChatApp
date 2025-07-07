@@ -22,14 +22,20 @@ export const userSocketMap = {}; //{userId: socketId}
 io.on("connection", (socket)=>{
    const userId = socket.handshake.query.userId;
    console.log("User Connected", userId);
-
-   //emit online users to all connected clients
-   io.emit("getOnlineUsers",Object.keys(userSocketMap));
+  
+   if (userId) {
+    userSocketMap[userId] = socket.id; // Store user properly
+     //emit online users to all connected clients
+    io.emit("getOnlineUsers",Object.keys(userSocketMap));
+   }
 
    socket.on("disconnect", ()=>{
     console.log("User disconnected", userId);
-    delete userSocketMap[userId];
+    if(userId){
+      delete userSocketMap[userId];
     io.emit("getOnlineUsers",Object.keys(userSocketMap))
+    }
+    
    })
    
 })
