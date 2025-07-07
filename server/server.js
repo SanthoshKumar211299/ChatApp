@@ -64,7 +64,11 @@ io.on("connection", (socket) => {
 //middleware setup
 
 app.use(express.json({limit: "4mb"}));
-app.use(cors());
+app.use(cors({
+   origin: "https://chat-app-backend-one-wheat.vercel.app", // or "*" just for testing
+  credentials: true
+}
+));
 //Routes setup
 app.use("/api/status", (req,res)=>res.send("server is live"));
 app.use("/api/auth", userRouter);
