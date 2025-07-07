@@ -11,10 +11,14 @@ import { log } from 'console';
 
 //create Express app and http server
 const app =express();
-const server = http.createServer(app)
+const server = http.createServer(app);
+
 // intialize  socket.io server
 export const io = new Server (server,{
-    cors:{origin: "*"}
+    cors:{
+      origin: allowedOrigins,
+      credentials:true
+    }
 })
 
 //Store online users
@@ -62,17 +66,25 @@ io.on("connection", (socket) => {
 })*/
 
 //middleware setup
-
-app.use(express.json({limit: "4mb"}));
 //Allow all origin
 const allowedOrigins = ['http://localhost:5173','https://chat-app-frontend1-ashy.vercel.app']
+app.use(cors({
+  origin:allowedOrigins, 
+  credentials:true
+}));
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+app.use(express.json({limit: "4mb"}));
+
 
 //Routes setup
 app.use("/api/status", (req,res)=>res.send("server is live"));
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
 
-app.use(cors({origin:allowedOrigins, credentials:true}));
+
 //connect db
 
 await connectDB();
