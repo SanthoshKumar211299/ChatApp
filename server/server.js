@@ -8,10 +8,21 @@ import messageRouter from './routes/messageRoutes.js';
 import { Server } from 'socket.io';
 import { log } from 'console';
 
+//Allow all origin
+const allowedOrigins = ['http://localhost:5173','https://chat-app-frontend1-ashy.vercel.app']
+app.use(cors({
+  origin:allowedOrigins, 
+  credentials:true
+}));
 
 //create Express app and http server
 const app =express();
 const server = http.createServer(app);
+
+ app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 // intialize  socket.io server
 export const io = new Server (server,{
@@ -20,6 +31,14 @@ export const io = new Server (server,{
       credentials:true
     }
 })
+
+app.use(express.json({limit: "4mb"}));
+
+//Routes setup
+app.use("/api/status", (req,res)=>res.send("server is live"));
+app.use("/api/auth", userRouter);
+app.use("/api/messages", messageRouter);
+
 
 //Store online users
 export const userSocketMap = {}; //{userId:socketId}
@@ -66,33 +85,23 @@ io.on("connection", (socket) => {
 })*/
 
 //middleware setup
-//Allow all origin
-const allowedOrigins = ['http://localhost:5173','https://chat-app-frontend1-ashy.vercel.app']
-app.use(cors({
-  origin:allowedOrigins, 
-  credentials:true
-}));
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
-app.use(express.json({limit: "4mb"}));
 
 
-//Routes setup
-app.use("/api/status", (req,res)=>res.send("server is live"));
-app.use("/api/auth", userRouter);
-app.use("/api/messages", messageRouter);
+
+
+
 
 
 //connect db
 
 await connectDB();
-if(process.env.NODE_ENV !== "production") {
+/*if(process.env.NODE_ENV !== "production") {
 
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT,()=> console.log("server is running on "+PORT))
-};
+};*/
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log("server is running on " + PORT));
 
 export default server;
