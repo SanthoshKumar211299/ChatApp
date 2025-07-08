@@ -46,14 +46,15 @@ app.use(cors());
 
 //Route
 
+
+app.use("/api/auth", userRouter)
+app.use("/api/message",messageRouter)
+
 app.use("/",(req,res)=>{
   res.send(
     "Server is Live"
   )
 })
-app.use("/api/auth", userRouter)
-app.use("/api/message",messageRouter)
-
 await connectDB();
 connectCloudinary();
 
