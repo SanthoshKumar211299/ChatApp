@@ -42,11 +42,7 @@ io.on("connection", (socket)=>{
 
 //middleware setup
 app.use(express.json({limit:'4mb'}));
-app.use(cors({
-  origin:"https://chat-app-frontend1-ashy.vercel.app",
-  credentials:true
-
-}));
+app.use(cors());
 
 //route setup
 app.use("/",(req,res)=>res.send("server is live"))
