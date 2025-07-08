@@ -1,20 +1,23 @@
 import express from 'express'
+import 'dotenv/config.js'
 import cors from 'cors'
-import'dotenv/config'
 import http from 'http'
-import { Server} from 'socket.io'
 import {connectDB} from './lib/db.js'
 import userRouter from './routes/userRoutes.js'
 import messageRouter from './routes/messageRoutes.js'
+import { Server } from 'socket.io'
 import connectCloudinary from './lib/cloudinary.js'
-//create express app and http server
+import { log } from 'console'
+
 const app = express();
 const server = http.createServer(app)
-//Initialize socket.io server
+
 export const io = new Server(server,{
   cors:{origin:"*"}
 })
-//store online user
+
+
+
 export const userSocketMap = {}; //{userId: socketId}
 //socket.io hanlder
 io.on("connection", (socket)=>{
@@ -37,27 +40,25 @@ io.on("connection", (socket)=>{
 })
 
 //middleware setup
-app.use(express.json({limit:'4mb'}));
-app.use(cors({
-  origin:"https://chat-app-frontend1-ashy.vercel.app",
-  credentials:true
 
-}));
+app.use(express.json({limit:"4mb"}));
+app.use(cors());
 
-//route setup
-app.get("/",(req,res)=>res.send("server is live"))
-app.use("/api/auth",userRouter)
-app.use("/api/messages",messageRouter)
+//Route
 
-//connect to mongodb
-await connectDB()
-connectCloudinary()
+app.get("/",(req,res)=>{
+  res.send(
+    "Server is Live"
+  )
+})
+app.use("/api/auth", userRouter)
+app.use("/api/message",messageRouter)
 
+await connectDB();
+connectCloudinary();
 
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, ()=> console. log("Server is running on PORT:"
-+ PORT));
+const PORT = process.env.PORT || 5000;
 
+server.listen(PORT,()=> console.log("Server is running on PORT:" + PORT));
 
- export default server
-
+export default server;
