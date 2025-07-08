@@ -46,7 +46,7 @@ app.use(cors());
 
 //Route
 
-app.get("/",(req,res)=>{
+app.use("/",(req,res)=>{
   res.send(
     "Server is Live"
   )
