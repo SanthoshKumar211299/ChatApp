@@ -7,7 +7,7 @@ import userRouter from './routes/userRoutes.js'
 import messageRouter from './routes/messageRoutes.js'
 import { Server } from 'socket.io'
 import connectCloudinary from './lib/cloudinary.js'
-import { log } from 'console'
+
 
 const app = express();
 const server = http.createServer(app)
