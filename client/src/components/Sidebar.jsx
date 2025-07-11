@@ -77,7 +77,7 @@ const Sidebar = () => {
             />
             <div className="flex flex-col leading-5">
               <p>{user.fullName}</p>
-              {onlineUsers.includes(user._id) 
+              {onlineUsers?.includes(user._id) 
               ? <span className="text-green-400 text-xs">Online</span>
               : <span className="text-neutral-400 text-xs">Offline</span>
               }
