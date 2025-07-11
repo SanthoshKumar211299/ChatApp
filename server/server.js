@@ -13,6 +13,7 @@ const app = express();
 const server = http.createServer(app)
 
 export const io = new Server(server,{
+  path: "/socket.io",
   cors:{origin:"*"}
 })
 
