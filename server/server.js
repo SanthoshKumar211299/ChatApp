@@ -14,7 +14,10 @@ const server = http.createServer(app)
 
 export const io = new Server(server,{
   path: "/socket.io",
-  cors:{origin:"*"}
+  cors:{
+    origin: 'https://chat-app-frontend1-ashy.vercel.app', // ✅ Your Vercel frontend
+    credentials: true
+  }
 })
 
 
