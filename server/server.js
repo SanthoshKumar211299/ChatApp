@@ -36,7 +36,7 @@ io.on("connection", (socket)=>{
     //emit online users to all connected clients
     io.emit("getOnlineUsers",Object.keys(userSocketMap));
    }
-   
+
    socket.on("disconnect", ()=>{
     console.log("User disconnected", userId);
       if (userId) {
@@ -57,7 +57,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'token']
 }));
-
+app.options('*', cors());
 //Route
 
 
