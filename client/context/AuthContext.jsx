@@ -9,6 +9,15 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.baseURL = backendUrl;
 axios.defaults.withCredentials = true;
 
+// ✅ Automatically attach token to every request header
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.token = token; //  req.headers.token
+  }
+  return config;
+});
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children})=>{
@@ -23,7 +32,9 @@ export const AuthProvider = ({children})=>{
       const checkAuth = async(req,res)=>{
         try {
                const {data} = await axios.get("/api/auth/check");
-               if(data.success){
+               
+               if(data.success)
+                {
                 setAuthUser(data.user)
                 connectSocket(data.user)
                }
@@ -35,7 +46,7 @@ export const AuthProvider = ({children})=>{
           const login = async(state,credentials)=>{
 
             try {
-             const {data} =await axios.post(`/api/auth/${state}`,  credentials)
+             const {data} = await axios.post(`/api/auth/${state}`,  credentials)
                 if(data.success){
                     setAuthUser(data.userData);
                     connectSocket(data.userData)
@@ -80,22 +91,28 @@ export const AuthProvider = ({children})=>{
        }
 
       // Connect socket function to handle socket connection and online users updates
-      const connectSocket = (userData) =>{
-           if(!userData || socket?.connected)
-            return;
-           const newSocket =io(backendUrl,{
-              query :{
-                userId: userData._id,
+      const connectSocket = (userData) => {
+        if (!userData) return;
 
-              }
-           });
-           newSocket.connect()
-           setSocket(newSocket)
+        // Disconnect old socket if any
+        if (socket?.connected) {
+          socket.disconnect();
+        }
 
-           newSocket.on("getOnlineUsers", (userIds)=>{
-            setOnlineUsers(userIds);
-           })
-      }
+        const newSocket = io(backendUrl, {
+          query: {
+            userId: userData._id,
+          },
+        });
+
+        newSocket.connect();
+        setSocket(newSocket);
+
+        newSocket.on("getOnlineUsers", (userIds) => {
+          setOnlineUsers(userIds);
+        });
+      };
+
 
       useEffect(()=>{
         if(token){
